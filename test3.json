@@ -1,0 +1,21 @@
+{
+    "stanja": [
+        {"state": "q0", "finals": false},
+        {"state": "q1", "finals": false},
+        {"state": "q2", "finals": false},
+        {"state": "q3", "finals": false},
+        {"state": "q4", "finals": true}
+    ],
+    "prijelazi": [
+        {"origin": "q0", "entry": "0", "spop": "A", "dest": "q0", "spush": "aA"},
+        {"origin": "q0", "entry": "0", "spop": "a", "dest": "q0", "spush": "aa"},
+        {"origin": "q0", "entry": "1", "spop": "A", "dest": "q1", "spush": "aA"},
+        {"origin": "q0", "entry": "1", "spop": "a", "dest": "q1", "spush": "aa"},
+        {"origin": "q0", "entry": "2", "spop": "a", "dest": "q2", "spush": ""},
+        {"origin": "q1", "entry": "1", "spop": "a", "dest": "q1", "spush": "aa"},
+        {"origin": "q1", "entry": "2", "spop": "a", "dest": "q2", "spush": ""},
+        {"origin": "q2", "entry": "2", "spop": "a", "dest": "q3", "spush": ""},
+        {"origin": "q3", "entry": "2", "spop": "a", "dest": "q3", "spush": ""},
+        {"origin": "q3", "entry": "", "spop": "A", "dest": "q4", "spush": "A"}
+    ]
+}

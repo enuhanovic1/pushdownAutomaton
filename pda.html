@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Pushdown Automaton</title>
+    <link rel="stylesheet" href="pda.css">
+  </head>
+  <body>
+    <div id="trans_change" class="trans_change">
+      <div class="trans_options">
+        <button id="delete_trans" onclick="return obrisiTranziciju();">Obrisi</button>
+        <div class="trans_mod_option">
+          <input id="new_entry" class="input" placeholder="a">
+          <input id="new_spop" class="input" placeholder="Z">
+          <input id="new_spush" class="input" placeholder=&gamma;>
+          <button id="modify_trans" onclick="return promijeniTranziciju();">Promijeni</button>
+        </div>
+        <br>
+        <button id="cancel_trans" onclick="return sakrijDijalogT();">Odustani</button>
+        <p id="t_num" class="t_num"></p>
+      </div>
+    </div>
+    <div id="state_change" class="state_change">
+      <div class="state_options">
+        <button id="delete_state" onclick="return obrisiStanje();">Obrisi</button>
+        <div class="state_mod_option">
+          <input id="new_state" class="input">
+          <button id="modify_state" onclick="return promijeniStanje();">Promijeni</button>
+        </div>
+        <br>
+        <button id="cancel_state" onclick="return sakrijDijalogS();">Odustani</button>
+        <p id="s_num" class="s_num"></p>
+      </div>
+    </div>
+    <header>PDA Simulator</header>
+    <table width="100%">
+      <tr>
+        <td class="menu">
+          <div class="state_input">
+            <label for="state_in">Unesite stanje</label>
+            <input id="state_in" class="input">
+            <label for="state_final">Finalno</label>
+            <input id="state_final" type="checkbox">
+            <input type="button" value="Dodaj" id="state_in_button" onclick="return dodajStanje();">
+          </div>
+          <div class="transition_input">
+            <label for="origin">Unesite funkciju prijelaza</label>
+            <br>
+            <input id="origin" class="input" placeholder="q">
+            <input id="entry" class="input" placeholder="a">
+            <input id="spop" class="input" placeholder="Z">
+            <input id="dest" class="input" placeholder="p">
+            <input id="spush" class="input" placeholder=&gamma;>
+            <br>
+            <input type="button" value="Dodaj" id="trans_in_button" onclick="return dodajTranziciju();">
+          </div>
+          <div class="file_input">
+            <label for="file_in">Ucitaj datoteku</label>
+            <input id="file_in" type="file" accept=".json">
+            <!--<br><br>-->
+            <!--<input type="button" value="Ucitaj" id="file_in_button" onclick="return ucitaj();">-->
+          </div>
+          <div class="file_output">
+            <!--<label for="file_out">Spasi u datoteku</label>-->
+            <input type="button" value="Spasi u datoteku" id="file_out_button" onclick="return spasi();">
+          </div>
+        </td>
+        <td>
+          <div class="states">
+            <div id="shema_container" class="shema_container">
+              <svg id="shema" class="shema" width="90%"></svg>
+            </div>
+            <div class="stack_container">
+              <table id="stack" class="stack"></table>
+            </div>
+            <div class="entry_tape_container">
+              <table id="entry_tape" class="entry_tape"></table>
+            </div>
+            <div></div>
+            <div id="testing_field" class="testing_field">
+              <input id="entry_seq">
+              <input type="button" value="Pokreni" id="run_button" onclick="return pokreni();">
+              <input type="button" value="Korak" id="step_button" onclick="return korak();">
+              <div id="prihvacanje" class="prihvacanje"></div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <script src="pda.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"></script>
+  </body>
+</html>

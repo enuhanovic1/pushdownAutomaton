@@ -1,0 +1,15 @@
+{
+    "stanja": [
+        {"state": "q0", "finals": false},
+        {"state": "q1", "finals": true}
+    ],
+    "prijelazi": [
+        {"origin": "q0", "entry": "a", "spop": "A", "dest": "q0", "spush": "aA"},
+        {"origin": "q0", "entry": "b", "spop": "A", "dest": "q0", "spush": "bA"},
+        {"origin": "q0", "entry": "a", "spop": "a", "dest": "q0", "spush": "aa"},
+        {"origin": "q0", "entry": "b", "spop": "b", "dest": "q0", "spush": "bb"},
+        {"origin": "q0", "entry": "a", "spop": "b", "dest": "q0", "spush": ""},
+        {"origin": "q0", "entry": "b", "spop": "a", "dest": "q0", "spush": ""},
+        {"origin": "q0", "entry": "", "spop": "A", "dest": "q1", "spush": "A"}
+    ]
+}
