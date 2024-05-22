@@ -13,7 +13,7 @@ iscrtajUlaznuTraku("", "");
 function dodajStanje() {
   var element = document.getElementById("state_in");
   var finalno = document.getElementById("state_final");
-  listOfStates.push({state: element.value, finals: finalno.checked});
+  listOfStates.push({state: element.value, finals: finalno.checked, x: 120 * listOfStates.length + 120, y: 240});
   iscrtajGraf();
   element.value = "";
   finalno.checked = false;
@@ -106,7 +106,7 @@ fileInput.addEventListener("change", async () => {
     listOfStates = [];
     listOfTransitions = [];
     for (var u of ucitano.stanja) {
-      listOfStates.push({state: u.state, finals: u.finals});
+      listOfStates.push({state: u.state, finals: u.finals, x: 120 * listOfStates.length + 120, y: 240});
     }
     for (var u of ucitano.prijelazi) {
       var rpt = listOfTransitions.filter((x) => x.origin == u.origin && x.dest == u.dest).length;
@@ -120,9 +120,10 @@ async function spasi() {
   try {
     const newHandle = await window.showSaveFilePicker();
     const writableStream = await newHandle.createWritable();
-    await writableStream.write(JSON.stringify({"stanja": listOfStates, "prijelazi": listOfTransitions.map((e) => {
-      return {origin: e.origin, entry: e.entry, spop: e.spop, dest: e.dest, spush: e.spush};
-    })}));
+    await writableStream.write(JSON.stringify({
+      "stanja": listOfStates.map((e) => {return {state: e.state, finals: e.finals};}),
+      "prijelazi": listOfTransitions.map((e) => {return {origin: e.origin, entry: e.entry, spop: e.spop, dest: e.dest, spush: e.spush};})
+    }));
     await writableStream.close();
   }
   catch (err) {
@@ -169,63 +170,79 @@ function sakrijDijalogS() {
   document.getElementById("state_change").style.display = "none";
 }
 
+function iscrtajTranziciju(i) {
+  var draw = SVG('#shema');
+  let st1 = listOfStates.findIndex((x) => x.state == listOfTransitions[i].origin);
+  let st2 = listOfStates.findIndex((x) => x.state == listOfTransitions[i].dest);
+  var d = listOfStates[st2].x - listOfStates[st1].x;
+  var r = listOfTransitions[i].repeat;
+  var cont1;
+  var cont2;
+  var str;
+  var rt = Math.sqrt(200);
+  if (d == 0) {
+    cont1 = [listOfStates[st1].x - 30 - 30 * r, listOfStates[st1].y - 50 - 30 * r, listOfStates[st1].x, listOfStates[st1].y - 50 - 30 * r].join(' ');
+    cont2 = [listOfStates[st2].x + 30 + 30 * r, listOfStates[st2].y - 50 - 30 * r, listOfStates[st2].x + rt, listOfStates[st2].y - rt].join(' ');
+    str = 'M' + (listOfStates[st1].x - rt) + ' ' + (listOfStates[st1].y - rt) + ' Q' + cont1 + ' Q' + cont2;
+  }
+  else {
+    rt = rt * Math.sign(d);
+    r = r * Math.sign(d);
+    var m = Math.max(Math.sign(d) * listOfStates[st1].y, Math.sign(d) * listOfStates[st2].y) * Math.sign(d);
+    cont1 = [listOfStates[st1].x + d/6 + rt, m + d/3 + 40 * r, (listOfStates[st1].x + listOfStates[st2].x)/2, m + d/3 + 40 * r].join(' ');
+    cont2 = [listOfStates[st2].x - d/6 - rt, m + d/3 + 40 * r, listOfStates[st2].x - rt, listOfStates[st2].y + rt].join(' ');
+    str = 'M' + (listOfStates[st1].x + rt) + ' ' + (listOfStates[st1].y + rt) + ' Q' + cont1 + ' Q' + cont2;
+  }
+  let g = draw.group().addClass('t_group');
+  var cur = g.path(str).stroke('#000000').fill('none').addClass('curve');
+  cur.marker('mid', 100, 25, function(add) {
+    add.text(listOfTransitions[i].entry + ', ' + listOfTransitions[i].spop + '/ ' + listOfTransitions[i].spush).center(50,12).rotate((d < 0) ? 180 : 0).addClass('tr_text');
+    this.ref(50, (d != 0) ? 3 : 22);
+    g.add(this);
+  });
+  cur.marker('end', 20, 20, function(add) {
+    add.path('M 0 5 L 10 10 L 0 15 z').addClass('arrow_point');
+    this.fill('#000000');
+    g.add(this);
+  }).attr("orient", "auto-start-reverse");
+  var clickable = g.path(str).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
+  clickable.click(function() {
+    document.getElementById("trans_change").style.display = "block";
+    document.getElementById("t_num").innerHTML = i;
+  });
+  return g;
+}
+
 function iscrtajGraf() {
   var draw = SVG('#shema');
   var h = 240;
-  //SVG('.shema').attr('height', 2 * h);
   document.getElementById("shema").style.height = (2 * h) + 'px';
-  //document.getElementById("prihvacanje").innerHTML = h + ' nesto';
-  //h = 200;
   draw.clear();
   for (let i = 0; i < listOfStates.length; i++) {
-    var g = draw.group();
-    var circ = g.circle(40).fill('#ffffff').stroke('#000000').center(120 * i + 120, h);
+    let g = draw.group().addClass('s_group');
+    var circ = g.circle(40).fill('#ffffff').stroke('#000000').center(listOfStates[i].x, listOfStates[i].y);
     if (listOfStates[i].finals) {
-      var circ1 = g.circle(36).fill('#ffffff').stroke('#000000').center(120 * i + 120, h);
+      var circ1 = g.circle(36).fill('#ffffff').stroke('#000000').center(listOfStates[i].x, listOfStates[i].y);
     }
-    var txt = draw.text(listOfStates[i].state).move(120 * i + 120 - 5*listOfStates[i].state.length, h - 10);
-    var clickable = g.circle(40).center(120 * i + 120, h).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
-    clickable.click(function() {
+    var txt = g.text(listOfStates[i].state).center(listOfStates[i].x, listOfStates[i].y);
+    var clickable = g.circle(40).center(listOfStates[i].x, listOfStates[i].y).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
+    clickable.dblclick(function() {
       document.getElementById("state_change").style.display = "block";
       document.getElementById("s_num").innerHTML = i;
     });
+    g.draggable();
+    g.on('dragend', (e) => {
+      listOfStates[i].x = g.cx();
+      listOfStates[i].y = g.cy();
+      for (let j = 0; j < listOfTransitions.length; j++) {
+        if (listOfTransitions[j].origin == listOfStates[i].state || listOfTransitions[j].dest == listOfStates[i].state) {
+          draw.find('.t_group')[j].replace(iscrtajTranziciju(j));
+        }
+      }
+    });
   }
   for (let i = 0; i < listOfTransitions.length; i++) {
-    let st1 = listOfStates.findIndex((x) => x.state == listOfTransitions[i].origin);
-    let st2 = listOfStates.findIndex((x) => x.state == listOfTransitions[i].dest);
-    var d = st2 - st1;
-    var r = listOfTransitions[i].repeat;
-    var cont1;
-    var cont2;
-    var str;
-    if (d == 0) {
-      var rt = Math.sqrt(200);
-      cont1 = [120 * st1 + 90 - 30 * r, h - 50 - 30 * r, 120 * st1 + 120, h - 50 - 30 * r].join(' ');
-      cont2 = [120 * st2 + 150 + 30 * r, h - 50 - 30 * r, 120 * st2 + 120 + rt, h - rt].join(' ');
-      str = 'M' + (120 * st1 + 120 - rt) + ' ' + (h - rt) + ' Q' + cont1 + ' Q' + cont2;
-    }
-    else {
-      var dy = 2*d;
-      var dx = Math.sqrt(400 - 4 * d * d) * Math.sign(d);
-      r = r * Math.sign(d);
-      cont1 = [120 * st1 + 20 * d + 120 + dx, h + 40 * d + 40 * r, 60 * st1 + 60 * st2 + 120, h + 40 * d + 40 * r].join(' ');
-      cont2 = [120 * st2 + 120 - 20 * d - dx, h + 40 * d + 40 * r, 120 * st2 + 120 - dx, h + dy].join(' ');
-      str = 'M' + (120 * st1 + 120 + dx) + ' ' + (h + dy) + ' Q' + cont1 + ' Q' + cont2;
-    }
-    var cur = draw.path(str).stroke('#000000').fill('none').addClass('curve');
-    cur.marker('mid', 100, 25, function(add) {
-      add.text(listOfTransitions[i].entry + ', ' + listOfTransitions[i].spop + '/ ' + listOfTransitions[i].spush).center(50,12).rotate((d < 0) ? 180 : 0).addClass('tr_text');
-      this.ref(50, (d != 0) ? 3 : 22);
-    });
-    cur.marker('end', 20, 20, function(add) {
-      add.path('M 0 5 L 10 10 L 0 15 z').addClass('arrow_point');
-      this.fill('#000000');
-    }).attr("orient", "auto-start-reverse");
-    var clickable = draw.path(str).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
-    clickable.click(function() {
-      document.getElementById("trans_change").style.display = "block";
-      document.getElementById("t_num").innerHTML = i;
-    });
+    iscrtajTranziciju(i);
   }
 }
 
@@ -239,9 +256,7 @@ var sadrzaj;
 var u0;
 var simbol;
 var prijelaz;
-var txt;
-var cur;
-var arr;
+var lin;
 
 function korak() {
   if (faza == 0) {
@@ -249,8 +264,8 @@ function korak() {
     stack = "A";
     idx = 0;
     stanje = listOfStates[idx];
-    circ = SVG('#shema').find('g')[idx];
-    circ.each(function(i, children) {
+    circ = SVG('#shema').find('.s_group')[idx];
+    circ.find('circle').each(function(i, children) {
       this.attr('stroke', 'orange');
     });
     ulaz = document.getElementById("entry_seq");
@@ -272,20 +287,17 @@ function korak() {
       else document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVACENO";
       iscrtajUlaznuTraku(sadrzaj, "");
       iscrtajStek("", "");
-      circ.each(function(i, children) {
+      circ.find('circle').each(function(i, children) {
         this.attr('stroke', '#000000');
       });
       faza = 0;
       return;
     }
-    txt = SVG('#shema').find('.tr_text')[prijelaz];
-    cur = SVG('#shema').find('.curve')[prijelaz];
-    arr = SVG('#shema').find('.arrow_point')[prijelaz];
-    txt.attr('fill', 'red');
-    cur.attr('stroke', 'red');
-    arr.attr('stroke', 'red');
-    arr.attr('fill', 'red');
-    circ.each(function(i, children) {
+    lin = SVG('#shema').find('.t_group')[prijelaz];
+    lin.find('.curve').attr('stroke', 'red');
+    lin.find('.arrow_point').attr('stroke', 'red').attr('fill', 'red');
+    lin.find('.tr_text').attr('fill', 'red');
+    circ.find('circle').each(function(i, children) {
       this.attr('stroke', '#000000');
     });
     faza = 3;
@@ -297,12 +309,11 @@ function korak() {
     stack = listOfTransitions[prijelaz].spush + stack;
     idx = listOfStates.findIndex((x) => x.state == listOfTransitions[prijelaz].dest);
     stanje = listOfStates[idx];
-    txt.attr('fill', '#000000');
-    cur.attr('stroke', '#000000');
-    arr.attr('stroke', '#000000');
-    arr.attr('fill', '#000000');
-    circ = SVG('#shema').find('g')[idx];
-    circ.each(function(i, children) {
+    lin.find('.curve').attr('stroke', '#000000');
+    lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
+    lin.find('.tr_text').attr('fill', '#000000');
+    circ = SVG('#shema').find('.s_group')[idx];
+    circ.find('circle').each(function(i, children) {
       this.attr('stroke', 'orange');
     });
     iscrtajUlaznuTraku(ulaz.value, "");
