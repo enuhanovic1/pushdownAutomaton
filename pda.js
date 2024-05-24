@@ -196,7 +196,10 @@ function iscrtajTranziciju(i) {
   let g = draw.group().addClass('t_group');
   var cur = g.path(str).stroke('#000000').fill('none').addClass('curve');
   cur.marker('mid', 100, 25, function(add) {
-    add.text(listOfTransitions[i].entry + ', ' + listOfTransitions[i].spop + '/ ' + listOfTransitions[i].spush).center(50,12).rotate((d < 0) ? 180 : 0).addClass('tr_text');
+    let entry_mark = (listOfTransitions[i].entry.length > 0) ? listOfTransitions[i].entry : 'ε';
+    let spop_mark = (listOfTransitions[i].spop.length > 0) ? listOfTransitions[i].spop : 'ε';
+    let spush_mark = (listOfTransitions[i].spush.length > 0) ? listOfTransitions[i].spush : 'ε';
+    add.text(entry_mark + ', ' + spop_mark + '/ ' + spush_mark).center(50,12).rotate((d < 0) ? 180 : 0).addClass('tr_text');
     this.ref(50, (d != 0) ? 3 : 22);
     g.add(this);
   });
