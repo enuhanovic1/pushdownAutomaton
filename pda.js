@@ -37,15 +37,18 @@ function dodajTranziciju() {
 
 function promijeniStanje() {
   var s = document.getElementById("new_state");
+  var f = document.getElementById("new_state_final");
   var n = document.getElementById("s_num").innerHTML;
   for (var i = 0; i < listOfTransitions.length; i++) {
     if (listOfTransitions[i].origin == listOfStates[n].state) listOfTransitions[i].origin = s.value;
     if (listOfTransitions[i].dest == listOfStates[n].state) listOfTransitions[i].dest = s.value;
   }
   listOfStates[n].state = s.value;
+  listOfStates[n].finals = f.checked;
   sakrijDijalogS();
   iscrtajGraf();
   s.value = "";
+  f.checked = false;
 }
 
 function promijeniTranziciju() {
@@ -210,6 +213,9 @@ function iscrtajTranziciju(i) {
   }).attr("orient", "auto-start-reverse");
   var clickable = g.path(str).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
   clickable.click(function() {
+    document.getElementById("new_entry").value = listOfTransitions[i].entry;
+    document.getElementById("new_spop").value = listOfTransitions[i].spop;
+    document.getElementById("new_spush").value = listOfTransitions[i].spush;
     document.getElementById("trans_change").style.display = "block";
     document.getElementById("t_num").innerHTML = i;
   });
@@ -229,7 +235,9 @@ function iscrtajGraf() {
     }
     var txt = g.text(listOfStates[i].state).center(listOfStates[i].x, listOfStates[i].y);
     var clickable = g.circle(40).center(listOfStates[i].x, listOfStates[i].y).stroke('#000000').fill('none').addClass('clickable').attr('stroke-opacity', 0);
-    clickable.dblclick(function() {
+    clickable.click(function() {
+      document.getElementById("new_state").value = listOfStates[i].state;
+      document.getElementById("new_state_final").checked = listOfStates[i].finals;
       document.getElementById("state_change").style.display = "block";
       document.getElementById("s_num").innerHTML = i;
     });
@@ -264,6 +272,7 @@ var lin;
 function korak() {
   if (faza == 0) {
     document.getElementById("prihvacanje").innerHTML = "";
+    document.getElementById("prihvacanje").style.backgroundColor = "#ffffff";
     stack = "A";
     idx = 0;
     stanje = listOfStates[idx];
@@ -286,8 +295,14 @@ function korak() {
   else if (faza == 2) {
     prijelaz = listOfTransitions.findIndex((x) => x.origin == stanje.state && x.entry == u0 && x.spop == simbol);
     if (prijelaz == -1) {
-      if (stanje.finals && sadrzaj == "") document.getElementById("prihvacanje").innerHTML = "PRIHVACENO";
-      else document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVACENO";
+      if (stanje.finals && sadrzaj == "") {
+        document.getElementById("prihvacanje").innerHTML = "PRIHVAĆENO";
+        document.getElementById("prihvacanje").style.backgroundColor = "lightgreen";
+      }
+      else {
+        document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
+        document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+      }
       iscrtajUlaznuTraku(sadrzaj, "");
       iscrtajStek("", "");
       circ.find('circle').each(function(i, children) {

@@ -8,11 +8,14 @@
   <body>
     <div id="trans_change" class="trans_change">
       <div class="trans_options">
-        <button id="delete_trans" onclick="return obrisiTranziciju();">Obrisi</button>
+        <button id="delete_trans" onclick="return obrisiTranziciju();">Obriši</button>
         <div class="trans_mod_option">
-          <input id="new_entry" class="input" placeholder="a">
-          <input id="new_spop" class="input" placeholder="Z">
-          <input id="new_spush" class="input" placeholder=&gamma;>
+          <label for="new_entry">Simbol sa ulaza: </label>
+          <label for="new_spop">Simbol sa steka: </label>
+          <label for="new_spush">Simboli na stek: </label>
+          <input id="new_entry" class="input">
+          <input id="new_spop" class="input">
+          <input id="new_spush" class="input">
           <button id="modify_trans" onclick="return promijeniTranziciju();">Promijeni</button>
         </div>
         <br>
@@ -22,9 +25,12 @@
     </div>
     <div id="state_change" class="state_change">
       <div class="state_options">
-        <button id="delete_state" onclick="return obrisiStanje();">Obrisi</button>
+        <button id="delete_state" onclick="return obrisiStanje();">Obriši</button>
         <div class="state_mod_option">
+          <label for="new_state">Naziv stanja: </label>
           <input id="new_state" class="input">
+          <label for="new_state_final">Finalno</label>
+          <input id="new_state_final" type="checkbox">
           <button id="modify_state" onclick="return promijeniStanje();">Promijeni</button>
         </div>
         <br>
@@ -37,32 +43,41 @@
       <tr>
         <td class="menu">
           <div class="state_input">
-            <label for="state_in">Unesite stanje</label>
+            <div>Unos stanja</div>
+            <label for="state_in">Naziv stanja: </label>
             <input id="state_in" class="input">
+            <br>
             <label for="state_final">Finalno</label>
             <input id="state_final" type="checkbox">
-            <input type="button" value="Dodaj" id="state_in_button" onclick="return dodajStanje();">
+            <br>
+            <button id="state_in_button" onclick="return dodajStanje();">Dodaj</button>
           </div>
           <div class="transition_input">
-            <label for="origin">Unesite funkciju prijelaza</label>
-            <br>
+            <div>Unos prijelaza</div>
+            <label for="origin">Polazno stanje: </label>
             <input id="origin" class="input" placeholder="q">
-            <input id="entry" class="input" placeholder="a">
-            <input id="spop" class="input" placeholder="Z">
+            <br>
+            <label for="dest">Odredišno stanje: </label>
             <input id="dest" class="input" placeholder="p">
+            <br>
+            <label for="entry">Simbol sa ulaza: </label>
+            <input id="entry" class="input" placeholder="a">
+            <br>
+            <label for="new_spop">Simbol sa steka: </label>
+            <input id="spop" class="input" placeholder="Z">
+            <br>
+            <label for="new_spush">Simboli na stek: </label>
             <input id="spush" class="input" placeholder=&gamma;>
             <br>
-            <input type="button" value="Dodaj" id="trans_in_button" onclick="return dodajTranziciju();">
+            <button id="trans_in_button" onclick="return dodajTranziciju();">Dodaj</button>
           </div>
           <div class="file_input">
-            <label for="file_in">Ucitaj datoteku</label>
+            <div>Učitavanje iz datoteke</div>
             <input id="file_in" type="file" accept=".json">
-            <!--<br><br>-->
-            <!--<input type="button" value="Ucitaj" id="file_in_button" onclick="return ucitaj();">-->
           </div>
           <div class="file_output">
-            <!--<label for="file_out">Spasi u datoteku</label>-->
-            <input type="button" value="Spasi u datoteku" id="file_out_button" onclick="return spasi();">
+            <div>Pohranjivanje u datoteku</div>
+            <input type="button" value="Spasi" id="file_out_button" onclick="return spasi();">
           </div>
         </td>
         <td>
