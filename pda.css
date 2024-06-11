@@ -263,7 +263,7 @@ header {
     padding: 5px;
     background-color: #bb88bb;
     display: grid;
-    grid: 20px / 30% 15% 15% auto;
+    grid: 20px / 30% 15% 15% 15% auto;
     grid-gap: 5px;
 }
 

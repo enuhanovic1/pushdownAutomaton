@@ -257,6 +257,30 @@ function iscrtajGraf() {
   }
 }
 
+const running = document.getElementById("run_button");
+running.addEventListener("click", (e) => {
+  for (let i of document.getElementsByTagName("input")) i.disabled = true;
+  for (let i of document.getElementsByTagName("button")) i.disabled = true;
+  document.getElementById("abort_button").disabled = false;
+  pokreni();
+});
+
+const aborted = document.getElementById("abort_button");
+aborted.addEventListener("click", (e) => {
+  for (let i of document.getElementsByTagName("input")) i.disabled = false;
+  for (let i of document.getElementsByTagName("button")) i.disabled = false;
+  otkazi();
+});
+
+const stepped = document.getElementById("step_button");
+stepped.addEventListener("click", (e) => {
+  for (let i of document.getElementsByTagName("input")) i.disabled = true;
+  for (let i of document.getElementsByTagName("button")) i.disabled = true;
+  document.getElementById("abort_button").disabled = false;
+  document.getElementById("step_button").disabled = false;
+  korak();
+});
+
 var faza = 0;
 
 var idx;
@@ -268,6 +292,29 @@ var u0;
 var simbol;
 var prijelaz;
 var lin;
+
+function otkazi() {
+  circ.find('circle').each(function(i, children) {
+    this.attr('stroke', '#000000');
+  });
+  lin.find('.curve').attr('stroke', '#000000');
+  lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
+  lin.find('.tr_text').attr('fill', '#000000');
+  faza = 0;
+  idx = -1;
+  stanje = undefined;
+  sadrzaj = "";
+  ulaz.value = sadrzaj;
+  u0 = '';
+  simbol = '';
+  stack = "A";
+  prijelaz = -1;
+  iscrtajGraf();
+  iscrtajStek("", "");
+  iscrtajUlaznuTraku("", "");
+  document.getElementById("prihvacanje").innerHTML = "";
+  document.getElementById("prihvacanje").style.backgroundColor = "#ffffff";
+}
 
 function korak() {
   if (faza == 0) {
@@ -303,6 +350,7 @@ function korak() {
         document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
         document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
       }
+      document.getElementById("step_button").disabled = true;
       iscrtajUlaznuTraku(sadrzaj, "");
       iscrtajStek("", "");
       circ.find('circle').each(function(i, children) {
@@ -342,20 +390,12 @@ function korak() {
 
 function pokreni() {
   faza = 0;
-  korak();
+  prijelaz = undefined;
   var timer = setInterval(function() {
-    var pauza1 = setTimeout(function() {
-      korak();
-      var pauza2 = setTimeout(function() {
-        korak();
-        if (prijelaz == -1) {
-          clearInterval(timer);
-          return;
-        }
-        var pauza3 = setTimeout(function() {
-          korak();
-        }, 1000);
-      }, 1000);
-    }, 1000);
-  }, 5000);
+    if (faza == 0 && prijelaz == -1) {
+      clearInterval(timer);
+      return;
+    }
+    korak();
+  }, 1000);
 }
