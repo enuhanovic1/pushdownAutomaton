@@ -174,7 +174,7 @@ header {
     height: 600px;
     padding: 10px;
     display: grid;
-    grid: 70% 10% auto / 90% auto;
+    grid: 70% 10% 5% auto / 90% auto;
 }
 
 .shema_container {

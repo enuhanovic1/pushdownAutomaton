@@ -147,9 +147,13 @@ for (let i = 0; i < inputs.length; i++) {
 function iscrtajStek(polja, mod) {
   var stek = document.getElementById("stack");
   var punjenje = "";
-  for (var i = 0; i < 15 - stack.length; i++) punjenje += "<tr><td></td></tr>";
+  for (var i = ((mod == "push" && polja == "") ? 1 : 0); i < 15 - stack.length; i++) punjenje += "<tr><td></td></tr>";
   if (mod == "pop") for (var i = 0; i < polja.length; i++) punjenje += "<tr><td class='popping'>" + polja[i] + "</td></tr>";
-  if (mod == "push") for (var i = 0; i < polja.length; i++) punjenje += "<tr><td class='pushing'>" + polja[i] + "</td></tr>";
+  if (mod == "push") {
+    if (polja == "") polja = "ε";
+    for (var i = 0; i < polja.length; i++) punjenje += "<tr><td class='pushing'>" + polja[i] + "</td></tr>";
+    if (polja == "ε") polja = "";
+  }
   for (var i = polja.length; i < stack.length; i++) punjenje += "<tr><td>" + stack[i] + "</td></tr>";
   stek.innerHTML = punjenje;
 }
@@ -158,7 +162,7 @@ function iscrtajUlaznuTraku(str, mod) {
   var ulazna = document.getElementById("entry_tape");
   var punjenje = "<tr>";
   for (var i = ((mod == "pop" && str == "") ? 1 : 0); i < 15 - str.length; i++) punjenje += "<td></td>";
-  var u0 = (str.length > 0) ? str[0] : '';
+  var u0 = (str.length > 0) ? str[0] : 'ε';
   if (mod == "pop") punjenje += "<td class='popping'>" + u0 + "</td>";
   for (var i = ((mod == "pop") ? 1 : 0); i < str.length; i++) punjenje += "<td>" + str[i] + "</td>";
   punjenje += "</tr>";
@@ -334,21 +338,35 @@ function korak() {
   else if (faza == 1) {
     sadrzaj = ulaz.value;
     u0 = (sadrzaj.length > 0) ? sadrzaj[0] : '';
-    simbol = stack[0];
+    simbol = (stack.length > 0) ? stack[0] : '';
     iscrtajUlaznuTraku(sadrzaj, "pop");
     iscrtajStek(simbol, "pop");
     faza = 2;
   }
   else if (faza == 2) {
-    prijelaz = listOfTransitions.findIndex((x) => x.origin == stanje.state && x.entry == u0 && x.spop == simbol);
+    prijelaz = listOfTransitions.findIndex((x) => x.origin == stanje.state && (x.entry == u0 || x.entry == '') && x.spop == simbol);
     if (prijelaz == -1) {
-      if (stanje.finals && sadrzaj == "") {
+      let stateAccept = document.getElementById("state_accept").checked;
+      let stackAccept = document.getElementById("stack_accept").checked;
+      if (stateAccept) {
+        if (stanje.finals && sadrzaj == "") {
         document.getElementById("prihvacanje").innerHTML = "PRIHVAĆENO";
         document.getElementById("prihvacanje").style.backgroundColor = "lightgreen";
+        }
+        else {
+          document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
+          document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+        }
       }
-      else {
-        document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
-        document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+      if (stackAccept) {
+        if (stack == "" && sadrzaj == "") {
+        document.getElementById("prihvacanje").innerHTML = "PRIHVAĆENO";
+        document.getElementById("prihvacanje").style.backgroundColor = "lightgreen";
+        }
+        else {
+          document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
+          document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+        }
       }
       document.getElementById("step_button").disabled = true;
       iscrtajUlaznuTraku(sadrzaj, "");
@@ -359,6 +377,7 @@ function korak() {
       faza = 0;
       return;
     }
+    if (listOfTransitions[prijelaz].entry == '') iscrtajUlaznuTraku("ε" + sadrzaj, "pop");
     lin = SVG('#shema').find('.t_group')[prijelaz];
     lin.find('.curve').attr('stroke', 'red');
     lin.find('.arrow_point').attr('stroke', 'red').attr('fill', 'red');
@@ -370,7 +389,7 @@ function korak() {
   }
   else if (faza == 3) {
     stack = stack.slice(1, stack.length);
-    sadrzaj = sadrzaj.slice(1, sadrzaj.length);
+    if (listOfTransitions[prijelaz].entry != '') sadrzaj = sadrzaj.slice(1, sadrzaj.length);
     ulaz.value = sadrzaj;
     stack = listOfTransitions[prijelaz].spush + stack;
     idx = listOfStates.findIndex((x) => x.state == listOfTransitions[prijelaz].dest);
