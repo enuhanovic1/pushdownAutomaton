@@ -100,11 +100,14 @@
             </div>
             <div></div>
             <div id="testing_field" class="testing_field">
-              <input id="entry_seq">
-              <button id="run_button">Pokreni</button>
-              <button id="step_button">Korak</button>
-              <button id="abort_button">Otkaži</button>
-              <div id="prihvacanje" class="prihvacanje"></div>
+              <div class="testcase">
+                <input class="entry_seq">
+                <button class="run_button" onclick="return pokreniE(0)">Pokreni</button>
+                <button class="step_button" onclick="return korakE(0)">Korak</button>
+                <button class="abort_button" onclick="return otkaziE()">Otkaži</button>
+                <div class="prihvacanje"></div>
+              </div>
+              <button id="add_testcase" onclick="return dodajTest();">Dodaj testni slučaj</button>
             </div>
           </div>
         </td>

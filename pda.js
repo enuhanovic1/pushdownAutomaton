@@ -1,14 +1,8 @@
-//import { SVG, extend as SVGextend, Element as SVGElement } from '@svgdotjs/svg.js';
-
 var listOfStates = [];
 var listOfTransitions = [];
 var stack = "A";
 iscrtajStek("", "");
 iscrtajUlaznuTraku("", "");
-
-//window.onload() = iscrtajStek();
-
-//document.getElementById("state_in_button").onclick() = dodajStanje()
 
 function dodajStanje() {
   var element = document.getElementById("state_in");
@@ -261,37 +255,48 @@ function iscrtajGraf() {
   }
 }
 
-const running = document.getElementById("run_button");
-running.addEventListener("click", (e) => {
-  for (let i of document.getElementsByTagName("input")) i.disabled = true;
-  for (let i of document.getElementsByTagName("button")) i.disabled = true;
-  document.getElementById("abort_button").disabled = false;
+function dodajTest() {
+  let dugme = document.getElementById("add_testcase");
+  let broj = document.getElementsByClassName("testcase").length;
+  let punjenje = "<div class=\"testcase\"><input class=\"entry_seq\">";
+  punjenje += "<button class=\"run_button\" onclick=\"return pokreniE(" + broj + ")\">Pokreni</button>";
+  punjenje += "<button class=\"step_button\" onclick=\"return korakE(" + broj + ")\">Korak</button>";
+  punjenje += "<button class=\"abort_button\" onclick=\"return otkaziE()\">Otkaži</button>";
+  punjenje += "<div class=\"prihvacanje\"></div></div>";
+  dugme.insertAdjacentHTML("beforebegin", punjenje);
+}
+
+var testidx = -1;
+
+function pokreniE(i) {
+  for (let j of document.getElementsByTagName("input")) j.disabled = true;
+  for (let j of document.getElementsByTagName("button")) j.disabled = true;
+  document.getElementsByClassName("abort_button")[i].disabled = false;
+  testidx = i;
   pokreni();
-});
+}
 
-const aborted = document.getElementById("abort_button");
-aborted.addEventListener("click", (e) => {
-  for (let i of document.getElementsByTagName("input")) i.disabled = false;
-  for (let i of document.getElementsByTagName("button")) i.disabled = false;
+function otkaziE() {
+  for (let j of document.getElementsByTagName("input")) j.disabled = false;
+  for (let j of document.getElementsByTagName("button")) j.disabled = false;
   otkazi();
-});
+}
 
-const stepped = document.getElementById("step_button");
-stepped.addEventListener("click", (e) => {
-  for (let i of document.getElementsByTagName("input")) i.disabled = true;
-  for (let i of document.getElementsByTagName("button")) i.disabled = true;
-  document.getElementById("abort_button").disabled = false;
-  document.getElementById("step_button").disabled = false;
+function korakE(i) {
+  for (let j of document.getElementsByTagName("input")) j.disabled = true;
+  for (let j of document.getElementsByTagName("button")) j.disabled = true;
+  document.getElementsByClassName("abort_button")[i].disabled = false;
+  document.getElementsByClassName("step_button")[i].disabled = false;
+  testidx = i;
   korak();
-});
+}
 
 var faza = 0;
 
 var idx;
 var stanje;
 var circ;
-var ulaz;
-var sadrzaj;
+var testcase;
 var u0;
 var simbol;
 var prijelaz;
@@ -307,8 +312,7 @@ function otkazi() {
   faza = 0;
   idx = -1;
   stanje = undefined;
-  sadrzaj = "";
-  ulaz.value = sadrzaj;
+  testcase = "";
   u0 = '';
   simbol = '';
   stack = "A";
@@ -316,14 +320,12 @@ function otkazi() {
   iscrtajGraf();
   iscrtajStek("", "");
   iscrtajUlaznuTraku("", "");
-  document.getElementById("prihvacanje").innerHTML = "";
-  document.getElementById("prihvacanje").style.backgroundColor = "#ffffff";
 }
 
 function korak() {
   if (faza == 0) {
-    document.getElementById("prihvacanje").innerHTML = "";
-    document.getElementById("prihvacanje").style.backgroundColor = "#ffffff";
+    document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "";
+    document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "#ffffff";
     stack = "A";
     idx = 0;
     stanje = listOfStates[idx];
@@ -331,15 +333,14 @@ function korak() {
     circ.find('circle').each(function(i, children) {
       this.attr('stroke', 'orange');
     });
-    ulaz = document.getElementById("entry_seq");
-    iscrtajUlaznuTraku(ulaz.value, "");
+    testcase = document.getElementsByClassName("entry_seq")[testidx].value;
+    iscrtajUlaznuTraku(testcase, "");
     faza = 1;
   }
   else if (faza == 1) {
-    sadrzaj = ulaz.value;
-    u0 = (sadrzaj.length > 0) ? sadrzaj[0] : '';
+    u0 = (testcase.length > 0) ? testcase[0] : '';
     simbol = (stack.length > 0) ? stack[0] : '';
-    iscrtajUlaznuTraku(sadrzaj, "pop");
+    iscrtajUlaznuTraku(testcase, "pop");
     iscrtajStek(simbol, "pop");
     faza = 2;
   }
@@ -349,27 +350,27 @@ function korak() {
       let stateAccept = document.getElementById("state_accept").checked;
       let stackAccept = document.getElementById("stack_accept").checked;
       if (stateAccept) {
-        if (stanje.finals && sadrzaj == "") {
-        document.getElementById("prihvacanje").innerHTML = "PRIHVAĆENO";
-        document.getElementById("prihvacanje").style.backgroundColor = "lightgreen";
+        if (stanje.finals && testcase == "") {
+        document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "PRIHVAĆENO";
+        document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "lightgreen";
         }
         else {
-          document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
-          document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+          document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "NIJE PRIHVAĆENO";
+          document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "lightcoral";
         }
       }
       if (stackAccept) {
-        if (stack == "" && sadrzaj == "") {
-        document.getElementById("prihvacanje").innerHTML = "PRIHVAĆENO";
-        document.getElementById("prihvacanje").style.backgroundColor = "lightgreen";
+        if (stack == "" && testcase == "") {
+        document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "PRIHVAĆENO";
+        document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "lightgreen";
         }
         else {
-          document.getElementById("prihvacanje").innerHTML = "NIJE PRIHVAĆENO";
-          document.getElementById("prihvacanje").style.backgroundColor = "lightcoral";
+          document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "NIJE PRIHVAĆENO";
+          document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "lightcoral";
         }
       }
-      document.getElementById("step_button").disabled = true;
-      iscrtajUlaznuTraku(sadrzaj, "");
+      document.getElementsByClassName("step_button")[testidx].disabled = true;
+      iscrtajUlaznuTraku(testcase, "");
       iscrtajStek("", "");
       circ.find('circle').each(function(i, children) {
         this.attr('stroke', '#000000');
@@ -377,7 +378,7 @@ function korak() {
       faza = 0;
       return;
     }
-    if (listOfTransitions[prijelaz].entry == '') iscrtajUlaznuTraku("ε" + sadrzaj, "pop");
+    if (listOfTransitions[prijelaz].entry == '') iscrtajUlaznuTraku("ε" + testcase, "pop");
     lin = SVG('#shema').find('.t_group')[prijelaz];
     lin.find('.curve').attr('stroke', 'red');
     lin.find('.arrow_point').attr('stroke', 'red').attr('fill', 'red');
@@ -389,8 +390,7 @@ function korak() {
   }
   else if (faza == 3) {
     stack = stack.slice(1, stack.length);
-    if (listOfTransitions[prijelaz].entry != '') sadrzaj = sadrzaj.slice(1, sadrzaj.length);
-    ulaz.value = sadrzaj;
+    if (listOfTransitions[prijelaz].entry != '') testcase = testcase.slice(1, testcase.length);
     stack = listOfTransitions[prijelaz].spush + stack;
     idx = listOfStates.findIndex((x) => x.state == listOfTransitions[prijelaz].dest);
     stanje = listOfStates[idx];
@@ -401,7 +401,7 @@ function korak() {
     circ.find('circle').each(function(i, children) {
       this.attr('stroke', 'orange');
     });
-    iscrtajUlaznuTraku(ulaz.value, "");
+    iscrtajUlaznuTraku(testcase, "");
     iscrtajStek(listOfTransitions[prijelaz].spush, "push");
     faza = 1;
   }
