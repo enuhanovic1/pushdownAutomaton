@@ -174,7 +174,7 @@ header {
     height: 650px;
     padding: 10px;
     display: grid;
-    grid: 70% 10% 5% auto / 90% auto;
+    grid: 65% 8% 5% auto / 90% auto;
 }
 
 .shema_container {
@@ -261,8 +261,15 @@ header {
 
 .testing_field {
     background-color: #bb88bb;
-    height: 100px;
+    height: 100%;
     overflow: auto;
+    padding: 5px;
+}
+
+.add_testcase {
+    width: 20%;
+    margin: auto 40%;
+    background-color: #cccc88;
 }
 
 .testcase {

@@ -100,6 +100,7 @@
             </div>
             <div></div>
             <div id="testing_field" class="testing_field">
+              <button id="run_all" onclick="return pokreniSve()">Pokreni sve</button>
               <div class="testcase">
                 <input class="entry_seq">
                 <button class="run_button" onclick="return pokreniE(0)">Pokreni</button>
@@ -107,7 +108,7 @@
                 <button class="abort_button" onclick="return otkaziE()">Otkaži</button>
                 <div class="prihvacanje"></div>
               </div>
-              <button id="add_testcase" onclick="return dodajTest();">Dodaj testni slučaj</button>
+              <button id="add_testcase" class="add_testcase" onclick="return dodajTest();">Dodaj testni slučaj</button>
             </div>
           </div>
         </td>

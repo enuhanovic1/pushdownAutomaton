@@ -418,3 +418,14 @@ function pokreni() {
     korak();
   }, 1000);
 }
+
+function pokreniSve() {
+  for (testidx = 0; testidx < document.getElementsByClassName("testcase").length; testidx++) {
+    faza = 0;
+    prijelaz = undefined;
+    while (faza != 0 || prijelaz != -1) korak();
+    otkazi();
+  }
+  for (let j of document.getElementsByTagName("input")) j.disabled = false;
+  for (let j of document.getElementsByTagName("button")) j.disabled = false;
+}
