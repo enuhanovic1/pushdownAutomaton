@@ -1,0 +1,58 @@
+.exercises {
+    background-color: #bb88bb;
+    padding: 10px;
+}
+
+.exercises div {
+    background-color: #996699;
+    text-align: center;
+    padding: 3px;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    background-color: #ddbbdd;
+    margin: 5px;
+    padding: 3px;
+}
+
+li:hover {
+    background-color: white;
+}
+
+.chosen {
+    border: 2px solid #666644;
+    background-color: #cccc88;
+}
+
+.konfig {
+    background-color: #bb88bb;
+    padding: 10px;
+}
+
+.konfig_title {
+    background-color: #996699;
+    text-align: center;
+    padding: 3px;
+}
+
+.pocetna {
+    background-color: #ffffff;
+    margin-top: 5px;
+    padding: 3px;
+}
+
+textarea {
+    margin-top: 5px;
+}
+
+.ocjena {
+    background-color: #cccc88;
+    margin: 10px;
+    padding: 2px 3px;
+    display: inline;
+    border: 1px solid #666644;
+}

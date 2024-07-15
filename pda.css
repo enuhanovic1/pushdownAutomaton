@@ -283,4 +283,6 @@ header {
 .prihvacanje {
     background-color: #ffffff;
     text-align: center;
+    padding: 2px 3px;
+    border: 1px solid black;
 }

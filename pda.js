@@ -268,29 +268,6 @@ function dodajTest() {
 
 var testidx = -1;
 
-function pokreniE(i) {
-  for (let j of document.getElementsByTagName("input")) j.disabled = true;
-  for (let j of document.getElementsByTagName("button")) j.disabled = true;
-  document.getElementsByClassName("abort_button")[i].disabled = false;
-  testidx = i;
-  pokreni();
-}
-
-function otkaziE() {
-  for (let j of document.getElementsByTagName("input")) j.disabled = false;
-  for (let j of document.getElementsByTagName("button")) j.disabled = false;
-  otkazi();
-}
-
-function korakE(i) {
-  for (let j of document.getElementsByTagName("input")) j.disabled = true;
-  for (let j of document.getElementsByTagName("button")) j.disabled = true;
-  document.getElementsByClassName("abort_button")[i].disabled = false;
-  document.getElementsByClassName("step_button")[i].disabled = false;
-  testidx = i;
-  korak();
-}
-
 var faza = 0;
 
 var idx;
@@ -302,13 +279,42 @@ var simbol;
 var prijelaz;
 var lin;
 
-function otkazi() {
-  circ.find('circle').each(function(i, children) {
-    this.attr('stroke', '#000000');
-  });
-  lin.find('.curve').attr('stroke', '#000000');
-  lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
-  lin.find('.tr_text').attr('fill', '#000000');
+function pokreniE(i) {
+  for (let j of document.getElementsByTagName("input")) j.disabled = true;
+  for (let j of document.getElementsByTagName("button")) j.disabled = true;
+  document.getElementsByClassName("abort_button")[i].disabled = false;
+  testidx = i;
+  pokreni();
+}
+
+function otkaziE() {
+  for (let j of document.getElementsByTagName("input")) j.disabled = false;
+  for (let j of document.getElementsByTagName("button")) j.disabled = false;
+  otkazi(true);
+}
+
+function korakE(i) {
+  for (let j of document.getElementsByTagName("input")) j.disabled = true;
+  for (let j of document.getElementsByTagName("button")) j.disabled = true;
+  document.getElementsByClassName("abort_button")[i].disabled = false;
+  document.getElementsByClassName("step_button")[i].disabled = false;
+  testidx = i;
+  korak(true);
+  if (faza == 0) document.getElementsByClassName("step_button")[testidx].disabled = true;
+}
+
+function otkazi(iscrtaj) {
+  if (iscrtaj) {
+    circ.find('circle').each(function(i, children) {
+      this.attr('stroke', '#000000');
+    });
+    lin.find('.curve').attr('stroke', '#000000');
+    lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
+    lin.find('.tr_text').attr('fill', '#000000');
+    iscrtajGraf();
+    iscrtajStek("", "");
+    iscrtajUlaznuTraku("", "");
+  }
   faza = 0;
   idx = -1;
   stanje = undefined;
@@ -317,31 +323,32 @@ function otkazi() {
   simbol = '';
   stack = "A";
   prijelaz = -1;
-  iscrtajGraf();
-  iscrtajStek("", "");
-  iscrtajUlaznuTraku("", "");
 }
 
-function korak() {
+function korak(iscrtaj) {
   if (faza == 0) {
     document.getElementsByClassName("prihvacanje")[testidx].innerHTML = "";
     document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "#ffffff";
     stack = "A";
     idx = 0;
     stanje = listOfStates[idx];
-    circ = SVG('#shema').find('.s_group')[idx];
-    circ.find('circle').each(function(i, children) {
-      this.attr('stroke', 'orange');
-    });
     testcase = document.getElementsByClassName("entry_seq")[testidx].value;
-    iscrtajUlaznuTraku(testcase, "");
+    if (iscrtaj) {
+      circ = SVG('#shema').find('.s_group')[idx];
+      circ.find('circle').each(function(i, children) {
+        this.attr('stroke', 'orange');
+      });
+      iscrtajUlaznuTraku(testcase, "");
+    }
     faza = 1;
   }
   else if (faza == 1) {
     u0 = (testcase.length > 0) ? testcase[0] : '';
     simbol = (stack.length > 0) ? stack[0] : '';
-    iscrtajUlaznuTraku(testcase, "pop");
-    iscrtajStek(simbol, "pop");
+    if (iscrtaj) {
+      iscrtajUlaznuTraku(testcase, "pop");
+      iscrtajStek(simbol, "pop");
+    }
     faza = 2;
   }
   else if (faza == 2) {
@@ -369,23 +376,26 @@ function korak() {
           document.getElementsByClassName("prihvacanje")[testidx].style.backgroundColor = "lightcoral";
         }
       }
-      document.getElementsByClassName("step_button")[testidx].disabled = true;
-      iscrtajUlaznuTraku(testcase, "");
-      iscrtajStek("", "");
-      circ.find('circle').each(function(i, children) {
-        this.attr('stroke', '#000000');
-      });
+      if (iscrtaj) {
+        iscrtajUlaznuTraku(testcase, "");
+        iscrtajStek("", "");
+        circ.find('circle').each(function(i, children) {
+          this.attr('stroke', '#000000');
+        });
+      }
       faza = 0;
       return;
     }
-    if (listOfTransitions[prijelaz].entry == '') iscrtajUlaznuTraku("ε" + testcase, "pop");
-    lin = SVG('#shema').find('.t_group')[prijelaz];
-    lin.find('.curve').attr('stroke', 'red');
-    lin.find('.arrow_point').attr('stroke', 'red').attr('fill', 'red');
-    lin.find('.tr_text').attr('fill', 'red');
-    circ.find('circle').each(function(i, children) {
-      this.attr('stroke', '#000000');
-    });
+    if (iscrtaj) {
+      if (listOfTransitions[prijelaz].entry == '') iscrtajUlaznuTraku("ε" + testcase, "pop");
+      lin = SVG('#shema').find('.t_group')[prijelaz];
+      lin.find('.curve').attr('stroke', 'red');
+      lin.find('.arrow_point').attr('stroke', 'red').attr('fill', 'red');
+      lin.find('.tr_text').attr('fill', 'red');
+      circ.find('circle').each(function(i, children) {
+        this.attr('stroke', '#000000');
+      });
+    }
     faza = 3;
   }
   else if (faza == 3) {
@@ -394,15 +404,17 @@ function korak() {
     stack = listOfTransitions[prijelaz].spush + stack;
     idx = listOfStates.findIndex((x) => x.state == listOfTransitions[prijelaz].dest);
     stanje = listOfStates[idx];
-    lin.find('.curve').attr('stroke', '#000000');
-    lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
-    lin.find('.tr_text').attr('fill', '#000000');
-    circ = SVG('#shema').find('.s_group')[idx];
-    circ.find('circle').each(function(i, children) {
-      this.attr('stroke', 'orange');
-    });
-    iscrtajUlaznuTraku(testcase, "");
-    iscrtajStek(listOfTransitions[prijelaz].spush, "push");
+    if (iscrtaj) {
+      lin.find('.curve').attr('stroke', '#000000');
+      lin.find('.arrow_point').attr('stroke', '#000000').attr('fill', '#000000');
+      lin.find('.tr_text').attr('fill', '#000000');
+      circ = SVG('#shema').find('.s_group')[idx];
+      circ.find('circle').each(function(i, children) {
+        this.attr('stroke', 'orange');
+      });
+      iscrtajUlaznuTraku(testcase, "");
+      iscrtajStek(listOfTransitions[prijelaz].spush, "push");
+    }
     faza = 1;
   }
 }
@@ -415,7 +427,7 @@ function pokreni() {
       clearInterval(timer);
       return;
     }
-    korak();
+    korak(true);
   }, 1000);
 }
 
@@ -423,8 +435,8 @@ function pokreniSve() {
   for (testidx = 0; testidx < document.getElementsByClassName("testcase").length; testidx++) {
     faza = 0;
     prijelaz = undefined;
-    while (faza != 0 || prijelaz != -1) korak();
-    otkazi();
+    while (faza != 0 || prijelaz != -1) korak(false);
+    otkazi(false);
   }
   for (let j of document.getElementsByTagName("input")) j.disabled = false;
   for (let j of document.getElementsByTagName("button")) j.disabled = false;

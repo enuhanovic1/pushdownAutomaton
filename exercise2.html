@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Vježbe Praćenja Kofiguracija</title>
+    <link rel="stylesheet" href="pda.css">
+    <link rel="stylesheet" href="exercise2.css">
+  </head>
+  <body>
+    <header>Vježbe praćenja konfiguracija</header>
+    <table width="100%">
+      <tr>
+        <td class="menu">
+          <div class="exercises">
+            <div>Lista vježbi</div>
+            <ul>
+                <li>Vježba 1</li>
+                <li>Vježba 2</li>
+                <li>Vježba 3</li>
+                <li>Vježba 4</li>
+                <li>Vježba 5</li>
+                <li>Vježba 6</li>
+            </ul>
+          </div>
+          <div class="konfig">
+            <div class="konfig_title">Unos konfiguracija</div>
+            <div id="pocetna" class="pocetna">Početna: </div>
+            <textarea rows="10"></textarea>
+          </div>
+          <div></div>
+        </td>
+        <td>
+          <div class="states">
+            <div id="shema_container" class="shema_container">
+              <svg id="shema" class="shema" width="90%"></svg>
+            </div>
+            <div></div>
+            <div id="descript"></div>
+            <div></div>
+            <div>
+              <input type="radio" id="state_accept" name="acceptance" value="state_accept" checked="true">
+              <label for="state_accept">Prihvaćanje prihvatljivim stanjem</label>
+              <input type="radio" id="stack_accept" name="acceptance" value="state_accept">
+              <label for="stack_accept">Prihvaćanje praznih stekom</label>
+            </div>
+            <div></div>
+            <div id="testing_field" class="testing_field"></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <script src="pda.js"></script>
+    <script src="exercise2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"></script>
+    <script src="node_modules/@svgdotjs/svg.draggable.js/dist/svg.draggable.js"></script>
+  </body>
+</html>

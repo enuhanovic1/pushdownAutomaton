@@ -2,8 +2,9 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Pushdown Automaton</title>
+    <title>Vježbe Konstrukcije</title>
     <link rel="stylesheet" href="pda.css">
+    <link rel="stylesheet" href="exercise.css">
   </head>
   <body>
     <div id="trans_change" class="trans_change">
@@ -38,7 +39,7 @@
         <p id="s_num" class="s_num"></p>
       </div>
     </div>
-    <header>PDA Simulator</header>
+    <header>Vježbe konstrukcije potisnog automata</header>
     <table width="100%">
       <tr>
         <td class="menu">
@@ -71,13 +72,15 @@
             <br>
             <button id="trans_in_button" onclick="return dodajTranziciju();">Dodaj</button>
           </div>
-          <div class="file_input">
-            <div>Učitavanje iz datoteke</div>
-            <input id="file_in" type="file" accept=".json">
-          </div>
-          <div class="file_output">
-            <div>Pohranjivanje u datoteku</div>
-            <input type="button" value="Spasi" id="file_out_button" onclick="return spasi();">
+          <div class="exercises">
+            <div>Lista vježbi</div>
+            <ul>
+                <li>Vježba 1</li>
+                <li>Vježba 2</li>
+                <li>Vježba 3</li>
+                <li>Vježba 4</li>
+                <li>Vježba 5</li>
+            </ul>
           </div>
         </td>
         <td>
@@ -85,12 +88,8 @@
             <div id="shema_container" class="shema_container">
               <svg id="shema" class="shema" width="90%"></svg>
             </div>
-            <div class="stack_container">
-              <table id="stack" class="stack"></table>
-            </div>
-            <div class="entry_tape_container">
-              <table id="entry_tape" class="entry_tape"></table>
-            </div>
+            <div></div>
+            <div id="descript"></div>
             <div></div>
             <div>
               <input type="radio" id="state_accept" name="acceptance" value="state_accept" checked="true">
@@ -99,22 +98,13 @@
               <label for="stack_accept">Prihvaćanje praznih stekom</label>
             </div>
             <div></div>
-            <div id="testing_field" class="testing_field">
-              <button id="run_all" onclick="return pokreniSve()">Pokreni sve</button>
-              <div class="testcase">
-                <input class="entry_seq">
-                <button class="run_button" onclick="return pokreniE(0)">Pokreni</button>
-                <button class="step_button" onclick="return korakE(0)">Korak</button>
-                <button class="abort_button" onclick="return otkaziE()">Otkaži</button>
-                <div class="prihvacanje"></div>
-              </div>
-              <button id="add_testcase" class="add_testcase" onclick="return dodajTest();">Dodaj testni slučaj</button>
-            </div>
+            <div id="testing_field" class="testing_field"></div>
           </div>
         </td>
       </tr>
     </table>
     <script src="pda.js"></script>
+    <script src="exercise.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"></script>
     <script src="node_modules/@svgdotjs/svg.draggable.js/dist/svg.draggable.js"></script>
   </body>
